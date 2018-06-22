@@ -5,7 +5,16 @@
 # Function for plotting the results of simulations. Example given at the end.
 # Rhodes, Cowan, Parra, Logie "Interaction Effects on Common Measures of Sensitivity: Choice of Measure, Type I Error and Power"
 
-plotSims <- function(data, xaxis, xgrid, ygrid, xaxisLab, xgridLab, ygridLab, yaxislab = 'Proportion Sig. Interactions', colors = c('tomato', 'dodgerblue', 'forestgreen'), shapes = c(0, 2, 3), linePos=0.05, xaxisLabLine = 4, xgridLabLine = 2.3, ygridLabLine = 2.7, xyaxisValsCex = .7, xgridValsLine = .7, ygridValsLine = .7, gridValsCex = .7, gridLabsCex = 1, leg = T, legPanel = 1, legy = .9){
+plotSims <- function(data, xaxis, xgrid, ygrid, xaxisLab, xgridLab, ygridLab, yaxislab = 'Proportion Sig. Interactions', colors = NULL, shapes = c(15, 17, 16), linePos=0.05, xaxisLabLine = 4, xgridLabLine = 2.3, ygridLabLine = 2.7, xyaxisValsCex = .7, xgridValsLine = .7, ygridValsLine = .7, gridValsCex = .7, gridLabsCex = 1, leg = T, legPanel = 1, legy = .9){
+  
+  if (is.null(colors)){
+    if(!require(viridisLite, quietly = T)){
+      install.packages("viridisLite", quiet = T)
+    }
+    library(viridisLite, quietly = T)
+    colors = rev(viridis(3, begin = .2, end=.8))
+  }
+  
   # extract levels for the grid
   xlevels = levels(as.factor(data[, xgrid]))
   ylevels = levels(as.factor(data[, ygrid]))
@@ -25,11 +34,11 @@ plotSims <- function(data, xaxis, xgrid, ygrid, xaxisLab, xgridLab, ygridLab, ya
       ### add points
       plotData = data[data[,xgrid] == xlevels[j] & data[,ygrid] == ylevels[i],]
       # d
-      points(x = plotData[,xaxis], y = plotData[,'BxW.dp'], type='b', col = colors[1], pch= shapes[1])
+      points(x = plotData[,xaxis], y = plotData[,'BxW.dp'], type='b', col = colors[1], pch= shapes[1], lty=2)
       # A'
       points(x = plotData[,xaxis], y = plotData[,'BxW.Ap'], type='b', col = colors[2], pch= shapes[2])
       # Pr
-      points(x = plotData[,xaxis], y = plotData[,'BxW.Pr'], type='b', col = colors[3], pch= shapes[3])
+      points(x = plotData[,xaxis], y = plotData[,'BxW.Pr'], type='b', col = colors[3], pch= shapes[3], lty=3)
       ### add values/ axes
       if (ylevels[i] == ylevels[length(ylevels)]){
         axis(side = 1, at = unique(data[,xaxis]), cex.axis=xyaxisValsCex)
@@ -51,13 +60,13 @@ plotSims <- function(data, xaxis, xgrid, ygrid, xaxisLab, xgridLab, ygridLab, ya
         legSpacex = (xrange[2] - xrange[1])*.2
         legSpacey = .2
         # d'
-        points(x = xrange[1], y = legy, pch = shapes[1], col = colors[1])
+        points(x = xrange[1], y = legy, pch = shapes[1], col = colors[1], cex=1.5)
         text(x = xrange[1] + legSpacex, y = legy, labels = bquote(italic("d'")))
         # A'
-        points(x = xrange[1], y = legy - legSpacey, pch = shapes[2], col = colors[2])
+        points(x = xrange[1], y = legy - legSpacey, pch = shapes[2], col = colors[2], cex=1.5)
         text(x = xrange[1] + legSpacex, y = legy - legSpacey, labels = bquote(italic("A'")))
         # Pr
-        points(x = xrange[1], y = legy - 2*legSpacey, pch = shapes[3], col = colors[3])
+        points(x = xrange[1], y = legy - 2*legSpacey, pch = shapes[3], col = colors[3], cex=1.5)
         text(x = xrange[1] + legSpacex, y = legy - 2*legSpacey, labels = bquote(italic(P[r])))
       }
     }
